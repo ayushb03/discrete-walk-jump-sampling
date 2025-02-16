@@ -1,4 +1,4 @@
-# Antibody Generation Package
+# Discrete Walk-Jump Sampling
 
 ## Overview
 
@@ -53,18 +53,19 @@ For more customization options, you can modify the following parameters in `conf
 
 
 ``` python
-from antibody_generation import Config, main
 
 config = Config(
 DATA={'num_samples': 10000, 'batch_size': 128},
 TRAINING={'ebm_epochs': 50, 'denoiser_epochs': 50}
-) ```
+)
+```
 
 ## Installation:
 1. Clone the repository:
 ``` bash
 git clone https://github.com/ayushb03/discrete-walk-jump-sampling.git
 ```
+
 2. Install dependencies:
 ``` bash
 uv pip install -r requirements.txt
