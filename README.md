@@ -2,7 +2,7 @@
 
 ## Overview
 
-This package implements the Discrete Walk-Jump Sampling (dWJS) approach for antibody sequence generation, as described in the paper "Protein Discovery with Discrete Walk-Jump Sampling" (Frey et al., 2023). The method combines:
+This package implements the Discrete Walk-Jump Sampling (dWJS) approach for antibody sequence generation, as described in the paper "Protein Discovery with Discrete Walk-Jump Sampling" (Frey et al., 2023) [arXiv:2306.12360](https://arxiv.org/abs/2306.12360). The method combines:
 
 1. **Energy-Based Modeling**: Learns a smoothed energy function of antibody sequences
 2. **Langevin MCMC Sampling**: Explores the smoothed data manifold
