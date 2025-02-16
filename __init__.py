@@ -1,5 +1,5 @@
 """
-Antibody Generation Package
+Discrete Walk Jump Sampling
 
 This package provides tools for generating and evaluating antibody sequences using
 Energy-Based Models and Denoising Networks.
