@@ -3,8 +3,8 @@ class Config:
     DATA = {
         'max_len': 297,               # Maximum sequence length
         'vocab_size': 21,             # Vocabulary size (20 amino acids + gap)
-        'batch_size': 32,             # Batch size for training
-        'num_samples': 10,          # Number of samples in dataset
+        'batch_size': 16,             # Batch size for training
+        'num_samples': 5,          # Number of samples in dataset
         'random_seed': 42,            # Random seed for reproducibility
     }
 
@@ -20,7 +20,7 @@ class Config:
     TRAINING = {
         'ebm_lr': 1e-3,               # Learning rate for EBM
         'denoiser_lr': 1e-3,          # Learning rate for Denoiser
-        'ebm_epochs': 2,             # Number of EBM training epochs
+        'ebm_epochs': 5,             # Number of EBM training epochs
         'denoiser_epochs': 5,        # Number of Denoiser training epochs
         'noise_std': None,            # Noise standard deviation (None = auto)
         'mcmc_steps': 10,             # MCMC steps during training
@@ -29,7 +29,7 @@ class Config:
 
     # Sampling parameters
     SAMPLING = {
-        'num_samples': 10,            # Number of samples to generate
+        'num_samples': 32,            # Number of samples to generate
         'mcmc_steps': 100,            # MCMC steps during sampling
         'mcmc_step_size': 0.01,       # MCMC step size during sampling
         'sampling_noise_std': None,   # Noise std for sampling (None = auto)
@@ -39,6 +39,17 @@ class Config:
     EVALUATION = {
         'use_property_model': False,  # Whether to use a property model for evaluation
         'num_reference_samples': 100, # Number of reference samples for evaluation
+    }
+
+    # Visualization parameters
+    VISUALIZATION = {
+        'random_state': 42,            # Random seed for reproducibility
+        'tsne_perplexity': 30,         # Perplexity for t-SNE
+        'tsne_max_iter': 1000,         # Maximum iterations for t-SNE
+        'plot_figsize': (12, 6),       # Figure size for plots
+        'kde_alpha': 0.3,              # Transparency for KDE plots
+        'grid_alpha': 0.3,             # Transparency for grid lines
+        'save_path': 'figures/'        # Directory to save plots
     }
 
     def __init__(self, **kwargs):

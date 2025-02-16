@@ -2,3 +2,7 @@ torch
 numpy
 scikit-learn
 tqdm
+matplotlib
+seaborn
+pandas
+scipy

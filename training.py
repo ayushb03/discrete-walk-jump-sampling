@@ -12,9 +12,14 @@ def train_ebm(ebm, dataloader, optimizer, epochs, noise_std):
         optimizer: Optimizer for training
         epochs: Number of training epochs
         noise_std: Standard deviation of Gaussian noise
+        
+    Returns:
+        List of losses for each epoch
     """
     ebm.train()
+    losses = []
     for epoch in range(epochs):
+        epoch_loss = 0
         for batch in dataloader:
             noisy_batch = batch + torch.randn_like(batch) * noise_std
             noisy_batch.requires_grad_(True)
@@ -28,7 +33,11 @@ def train_ebm(ebm, dataloader, optimizer, epochs, noise_std):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item()}")
+            epoch_loss += loss.item()
+        avg_loss = epoch_loss / len(dataloader)
+        losses.append(avg_loss)
+        print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss}")
+    return losses
 
 
 def train_denoiser(denoiser, dataloader, optimizer, epochs, noise_std):
@@ -41,10 +50,15 @@ def train_denoiser(denoiser, dataloader, optimizer, epochs, noise_std):
         optimizer: Optimizer for training
         epochs: Number of training epochs
         noise_std: Standard deviation of Gaussian noise to add to training data
+        
+    Returns:
+        List of losses for each epoch
     """
     denoiser.train()
     criterion = nn.MSELoss()
+    losses = []
     for epoch in range(epochs):
+        epoch_loss = 0
         for batch in dataloader:
             noisy_batch = batch + torch.randn_like(batch) * noise_std
             denoised_batch = denoiser(noisy_batch)
@@ -52,4 +66,8 @@ def train_denoiser(denoiser, dataloader, optimizer, epochs, noise_std):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item()}")
+            epoch_loss += loss.item()
+        avg_loss = epoch_loss / len(dataloader)
+        losses.append(avg_loss)
+        print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss}")
+    return losses

@@ -10,6 +10,12 @@ import torch
 from torch.utils.data import DataLoader
 import numpy as np
 import torch.optim as optim
+import matplotlib.pyplot as plt
+from visualisations import (plot_energy_landscape,
+                           plot_training_progress,
+                           plot_sequence_diversity,
+                           plot_property_distribution,
+                           plot_quality_metrics)
 
 def main():
     # Initialize config
@@ -48,12 +54,18 @@ def main():
     ebm_optimizer = optim.Adam(ebm.parameters(), lr=config.TRAINING['ebm_lr'])
     denoiser_optimizer = optim.Adam(denoiser.parameters(), lr=config.TRAINING['denoiser_lr'])
 
-    # Train models
-    train_ebm(ebm, dataloader, ebm_optimizer, 
-              epochs=config.TRAINING['ebm_epochs'], 
-              noise_std=config.TRAINING['noise_std'])
+    # Track training metrics
+    ebm_losses = []
+    denoiser_losses = []
+    dcs_scores = []
+    diversity_scores = []
 
-    train_denoiser(denoiser, dataloader, denoiser_optimizer,
+    # Train models
+    ebm_losses = train_ebm(ebm, dataloader, ebm_optimizer, 
+                          epochs=config.TRAINING['ebm_epochs'], 
+                          noise_std=config.TRAINING['noise_std'])
+
+    denoiser_losses = train_denoiser(denoiser, dataloader, denoiser_optimizer,
                    epochs=config.TRAINING['denoiser_epochs'],
                    noise_std=config.TRAINING['noise_std'])
 
@@ -71,12 +83,38 @@ def main():
 
     # Evaluate generated samples
     reference_samples = next(iter(dataloader))  # Use a batch of real data as reference
-    dcs = distributional_conformity_score(generated_samples, reference_samples)  # No property model needed
+    dcs = distributional_conformity_score(generated_samples, reference_samples)
+    dcs_scores.append(dcs)
     print(f"Distributional Conformity Score: {dcs}")
+    
     unique_samples = set(tuple(sample.numpy()) for sample in generated_samples)
     print(f"Unique Samples: {len(unique_samples)}")
+    
     int_div = internal_diversity(generated_samples)
+    diversity_scores.append(int_div)
     print(f"Internal Diversity: {int_div}")
+
+    # Visualization Section
+    print("\nGenerating visualizations...")
+    
+    # 1. Energy Landscape
+    plot_energy_landscape(ebm)
+    
+    # 2. Training Progress
+    plot_training_progress(ebm_losses, denoiser_losses)
+    
+    # 3. Sequence Diversity
+    real_samples = [''.join(np.random.choice(list(vocab), size=config.DATA['max_len'])) 
+                    for _ in range(config.DATA['num_samples'])]
+    plot_sequence_diversity(real_samples, generated_samples)
+    
+    # 4. Property Distribution
+    plot_property_distribution(real_samples, generated_samples)
+    
+    # 5. Quality Metrics
+    plot_quality_metrics(dcs_scores, diversity_scores)
+
+    print("Visualizations complete!")
 
 if __name__ == "__main__":
     main()
